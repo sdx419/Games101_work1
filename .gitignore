@@ -10,6 +10,7 @@ x86/
 *.user
 *.suo
 *.userosscache
+*.vcxproj
 
 # IDE 临时文件
 .vs/

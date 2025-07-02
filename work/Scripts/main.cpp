@@ -3,6 +3,7 @@
 #include <eigen/Eigen>
 #include <iostream>
 #include <opencv2/opencv.hpp>
+using namespace Eigen;
 
 constexpr double MY_PI = 3.1415926;
 
@@ -27,6 +28,13 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle)
     // Create the model matrix for rotating the triangle around the Z axis.
     // Then return it.
 
+    Matrix4f rotate;
+    float angle_rad = rotation_angle * MY_PI / 180.0;
+    rotate << cos(angle_rad), sin(angle_rad), 0, 0, -sin(angle_rad), cos(angle_rad), 0, 0,
+        0, 0, 1, 0, 0, 0, 0, 1;
+
+    model = rotate * model;
+
     return model;
 }
 
@@ -40,6 +48,33 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
     // TODO: Implement this function
     // Create the projection matrix for the given parameters.
     // Then return it.
+
+    float n = -zNear;
+    float f = -zFar;
+    float A = n + f;
+    float B = -n * f;
+
+    Matrix4f perspective;
+
+	perspective << n, 0, 0, 0, 0, n, 0, 0, 0, 0, A, B, 0, 0, 1, 0;
+    //projection = perspective * projection;
+
+    float top = abs(zNear) * tan(eye_fov / 2 * MY_PI / 180.0);
+    float bottom = -top;
+
+    float right = top * aspect_ratio;
+	float left = -right;
+
+    Matrix4f scale;
+
+    scale << 2.0 / (right - left), 0, 0, 0, 0, 2.0 / (top - bottom), 0, 0,
+        0, 0, 2.0 / abs(zNear - zFar), 0, 0, 0, 0, 1;
+
+	Matrix4f translate;
+	translate << 1, 0, 0, -(right + left) / 2.0, 0, 1, 0, -(top + bottom) / 2.0,
+		0, 0, 1, -(n + f) / 2.0, 0, 0, 0, 1;
+
+    projection = scale * translate * perspective * projection;
 
     return projection;
 }
