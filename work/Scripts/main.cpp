@@ -49,6 +49,7 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
     // Create the projection matrix for the given parameters.
     // Then return it.
 
+    // 传的参数是近平面和远平面的绝对距离，但是摄像机看向-z轴，所以根据矩阵定义，需要将其转为相反数
     float n = -zNear;
     float f = -zFar;
     float A = n + f;
