@@ -159,6 +159,7 @@ void rst::rasterizer::draw(rst::pos_buf_id pos_buffer, rst::ind_buf_id ind_buffe
             vec /= vec.w();
         }
 
+        // 将(-1,-1,-1)到(1,1,1)立方体投影到平面上
         for (auto & vert : v)
         {
             vert.x() = 0.5*width*(vert.x()+1.0);
